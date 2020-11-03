@@ -25,8 +25,8 @@ public class RoomController {
     private final RepositoryService roomService;
 
     @Autowired
-    public RoomController(@Qualifier("roomService") RepositoryService personService,
-                          @Qualifier("personService") RepositoryService roomService) {
+    public RoomController(@Qualifier("personService") RepositoryService personService,
+                          @Qualifier("roomService") RepositoryService roomService) {
         this.personService = personService;
         this.roomService = roomService;
     }
@@ -45,9 +45,9 @@ public class RoomController {
         );
     }
 
-    @PutMapping("/enter/{id}?user={user_id}")
-    public ResponseEntity<Void> enterToRoom(@PathVariable("id") int roomId,
-                                            @RequestParam("user_id") int userId) {
+    @PutMapping("/enter/{room_id}/{user_id}")
+    public ResponseEntity<Void> enterToRoom(@PathVariable("room_id") int roomId,
+                                            @PathVariable("user_id") int userId) {
         Optional<Room> roomBox = roomService.findById(roomId);
         Optional<Person> personBox = personService.findById(userId);
         if (!roomBox.isPresent() || !personBox.isPresent()) {
@@ -70,8 +70,8 @@ public class RoomController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/message?user={id}")
-    public ResponseEntity<Message> getMessage(@RequestParam("id") int id,
+    @GetMapping("/message/{user_id}")
+    public ResponseEntity<Message> getMessage(@PathVariable("user_id") int id,
                                               @RequestBody Message message) {
         Person person = (Person) personService.findById(id).get();
         Message result = new Message(message.getId(), message.getContent(), person);
