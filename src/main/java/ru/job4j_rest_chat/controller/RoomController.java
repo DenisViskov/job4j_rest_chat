@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j_rest_chat.domain.Message;
 import ru.job4j_rest_chat.domain.Person;
 import ru.job4j_rest_chat.domain.Room;
 import ru.job4j_rest_chat.service.RepositoryService;
@@ -56,5 +57,27 @@ public class RoomController {
         room.addPerson(personBox.get());
         roomService.update(room);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRoom(@PathVariable("id") int id) {
+        Optional<Room> roomBox = roomService.findById(id);
+        if (roomBox.isPresent()) {
+            Room room = roomBox.get();
+            roomService.delete(room);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/message?user={id}")
+    public ResponseEntity<Message> getMessage(@RequestParam("id") int id,
+                                              @RequestBody Message message) {
+        Person person = (Person) personService.findById(id).get();
+        Message result = new Message(message.getId(), message.getContent(), person);
+        return new ResponseEntity<>(
+                result,
+                HttpStatus.OK
+        );
     }
 }
