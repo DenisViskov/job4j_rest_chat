@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * Class is a rest person controller
+ *
  * @author Денис Висков
  * @version 1.0
  * @since 03.11.2020
@@ -19,6 +21,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/person")
 public class PersonController {
+    /**
+     * Service
+     */
     private final RepositoryService service;
 
     @Autowired
@@ -26,11 +31,18 @@ public class PersonController {
         this.service = service;
     }
 
+    /**
+     * @return all persons
+     */
     @GetMapping("/")
     public List<Person> findAll() {
         return service.findAll();
     }
 
+    /**
+     * @param id
+     * @return person by given ID
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Person> getById(@PathVariable("id") int id) {
         Optional<Person> box = service.findById(id);
@@ -43,6 +55,12 @@ public class PersonController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Create new person
+     *
+     * @param person
+     * @return Person
+     */
     @PostMapping("/")
     public ResponseEntity<Person> createPerson(@RequestBody Person person) {
         return new ResponseEntity<>(
@@ -51,6 +69,12 @@ public class PersonController {
         );
     }
 
+    /**
+     * Update person
+     *
+     * @param id
+     * @return void
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Void> updatePerson(@PathVariable("id") int id) {
         Optional<Person> box = service.findById(id);
@@ -61,6 +85,12 @@ public class PersonController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Delete person by given id
+     *
+     * @param id
+     * @return void
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable("id") int id) {
         Optional<Person> box = service.findById(id);

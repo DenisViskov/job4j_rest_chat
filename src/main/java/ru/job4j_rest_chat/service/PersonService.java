@@ -11,13 +11,21 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * Class is a person service
+ *
  * @author Денис Висков
  * @version 1.0
  * @since 03.11.2020
  */
 @Service("personService")
 public class PersonService implements RepositoryService<Person> {
+    /**
+     * Person repository
+     */
     private final PersonRepository repository;
+    /**
+     * Role repository
+     */
     private final RoleRepository roleRepository;
 
     @Autowired
@@ -26,6 +34,12 @@ public class PersonService implements RepositoryService<Person> {
         this.roleRepository = roleRepository;
     }
 
+    /**
+     * Add new person to store
+     *
+     * @param some
+     * @return Person
+     */
     @Override
     public Person add(Person some) {
         Role role_user = roleRepository.save(new Role(1, "ROLE_USER"));
@@ -33,6 +47,11 @@ public class PersonService implements RepositoryService<Person> {
         return repository.save(some);
     }
 
+    /**
+     * Update person
+     *
+     * @param some
+     */
     @Override
     public void update(Person some) {
         if (repository.findById(some.getId()).isPresent()) {
@@ -40,6 +59,11 @@ public class PersonService implements RepositoryService<Person> {
         }
     }
 
+    /**
+     * Delete person
+     *
+     * @param some
+     */
     @Override
     public void delete(Person some) {
         if (repository.findById(some.getId()).isPresent()) {
@@ -47,11 +71,22 @@ public class PersonService implements RepositoryService<Person> {
         }
     }
 
+    /**
+     * Return all persons
+     *
+     * @return List
+     */
     @Override
     public List<Person> findAll() {
         return repository.findAll();
     }
 
+    /**
+     * Return person by given id
+     *
+     * @param id
+     * @return Optional
+     */
     @Override
     public Optional<Person> findById(int id) {
         return repository.findById(id);

@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * Class is a rest room controller
+ *
  * @author Денис Висков
  * @version 1.0
  * @since 03.11.2020
@@ -21,7 +23,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/room")
 public class RoomController {
+    /**
+     * Person service
+     */
     private final RepositoryService personService;
+    /**
+     * Room service
+     */
     private final RepositoryService roomService;
 
     @Autowired
@@ -31,11 +39,20 @@ public class RoomController {
         this.roomService = roomService;
     }
 
+    /**
+     * @return all rooms
+     */
     @GetMapping("/")
     public List<Room> getAll() {
         return roomService.findAll();
     }
 
+    /**
+     * Create new room
+     *
+     * @param room
+     * @return room
+     */
     @PostMapping("/")
     public ResponseEntity<Room> createRoom(@RequestBody Room room) {
         Room result = (Room) roomService.add(room);
@@ -45,6 +62,13 @@ public class RoomController {
         );
     }
 
+    /**
+     * Execute enter person in room
+     *
+     * @param roomId
+     * @param userId
+     * @return void
+     */
     @PutMapping("/enter/{room_id}/{user_id}")
     public ResponseEntity<Void> enterToRoom(@PathVariable("room_id") int roomId,
                                             @PathVariable("user_id") int userId) {
@@ -59,6 +83,12 @@ public class RoomController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Delete room
+     *
+     * @param id
+     * @return void
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRoom(@PathVariable("id") int id) {
         Optional<Room> roomBox = roomService.findById(id);
@@ -70,6 +100,14 @@ public class RoomController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Dont save message on the side server
+     * Necessary what would just shows message on the side GUI
+     *
+     * @param id
+     * @param message
+     * @return Message
+     */
     @PostMapping("/message/{user_id}")
     public ResponseEntity<Message> postMessage(@PathVariable("user_id") int id,
                                                @RequestBody Message message) {

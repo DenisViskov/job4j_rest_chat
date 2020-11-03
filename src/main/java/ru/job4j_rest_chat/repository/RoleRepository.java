@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ru.job4j_rest_chat.domain.Role;
 
 /**
- * Интерфейс реализующий способность
+ * Interface of Role repository
  *
  * @author Денис Висков
  * @version 1.0

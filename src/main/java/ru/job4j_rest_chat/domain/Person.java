@@ -4,6 +4,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 /**
+ * Class is an entity Person
+ *
  * @author Денис Висков
  * @version 1.0
  * @since 03.11.2020
@@ -11,13 +13,25 @@ import java.util.Objects;
 @Entity
 @Table(name = "persons")
 public class Person {
+    /**
+     * Id
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    /**
+     * Login
+     */
     @Column(name = "login")
     private String login;
+    /**
+     * Password
+     */
     @Column(name = "password")
     private String password;
+    /**
+     * Role
+     */
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;

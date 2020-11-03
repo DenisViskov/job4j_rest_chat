@@ -9,12 +9,17 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * Class is a room service
+ *
  * @author Денис Висков
  * @version 1.0
  * @since 03.11.2020
  */
 @Service("roomService")
 public class RoomService implements RepositoryService<Room> {
+    /**
+     * Room repository
+     */
     private final RoomRepository repository;
 
     @Autowired
@@ -22,11 +27,22 @@ public class RoomService implements RepositoryService<Room> {
         this.repository = repository;
     }
 
+    /**
+     * Method add new room
+     *
+     * @param some
+     * @return room
+     */
     @Override
     public Room add(Room some) {
         return repository.save(some);
     }
 
+    /**
+     * Method of update room in repo
+     *
+     * @param some
+     */
     @Override
     public void update(Room some) {
         if (repository.findById(some.getId()).isPresent()) {
@@ -34,6 +50,11 @@ public class RoomService implements RepositoryService<Room> {
         }
     }
 
+    /**
+     * Method of delete room
+     *
+     * @param some
+     */
     @Override
     public void delete(Room some) {
         if (repository.findById(some.getId()).isPresent()) {
@@ -41,11 +62,22 @@ public class RoomService implements RepositoryService<Room> {
         }
     }
 
+    /**
+     * Method return list of all rooms
+     *
+     * @return List
+     */
     @Override
     public List<Room> findAll() {
         return repository.findAll();
     }
 
+    /**
+     * Method find room by given id
+     *
+     * @param id
+     * @return Optional
+     */
     @Override
     public Optional<Room> findById(int id) {
         return repository.findById(id);

@@ -7,6 +7,8 @@ import javax.persistence.Table;
 import java.util.Objects;
 
 /**
+ * Class is an entity role
+ *
  * @author Денис Висков
  * @version 1.0
  * @since 03.11.2020
@@ -14,8 +16,14 @@ import java.util.Objects;
 @Entity
 @Table(name = "roles")
 public class Role {
+    /**
+     * Id
+     */
     @Id
     private int id;
+    /**
+     * Name
+     */
     @Column(name = "name")
     private String name;
 

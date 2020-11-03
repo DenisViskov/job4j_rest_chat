@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
+ * Class is an entity room
+ *
  * @author Денис Висков
  * @version 1.0
  * @since 03.11.2020
@@ -13,11 +15,20 @@ import java.util.Set;
 @Entity
 @Table(name = "rooms")
 public class Room {
+    /**
+     * Id
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    /**
+     * Name
+     */
     @Column(name = "name")
     private String name;
+    /**
+     * Persons
+     */
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Person> persons;
 
@@ -31,6 +42,11 @@ public class Room {
         this.persons = new HashSet<>();
     }
 
+    /**
+     * Add person to room
+     *
+     * @param person
+     */
     public void addPerson(Person person) {
         persons.add(person);
     }

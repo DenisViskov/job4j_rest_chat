@@ -3,13 +3,24 @@ package ru.job4j_rest_chat.domain;
 import java.util.Objects;
 
 /**
+ * Plain POJO Message class
+ *
  * @author Денис Висков
  * @version 1.0
  * @since 03.11.2020
  */
 public class Message {
+    /**
+     * Id
+     */
     private final int id;
+    /**
+     * Content
+     */
     private final String content;
+    /**
+     * Author
+     */
     private final Person author;
 
     public Message(int id, String content, Person author) {
