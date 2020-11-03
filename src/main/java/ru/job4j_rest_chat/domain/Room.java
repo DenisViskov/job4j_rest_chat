@@ -18,7 +18,7 @@ public class Room {
     private int id;
     @Column(name = "name")
     private String name;
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Person> persons;
 
     public Room() {
