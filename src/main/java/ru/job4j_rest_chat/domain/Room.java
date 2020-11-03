@@ -18,7 +18,7 @@ public class Room {
     private int id;
     @Column(name = "name")
     private String name;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     private Set<Person> persons;
 
     public Room() {
@@ -31,7 +31,7 @@ public class Room {
         this.persons = new HashSet<>();
     }
 
-    public void addPerson(Person person){
+    public void addPerson(Person person) {
         persons.add(person);
     }
 
