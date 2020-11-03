@@ -70,9 +70,9 @@ public class RoomController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/message/{user_id}")
-    public ResponseEntity<Message> getMessage(@PathVariable("user_id") int id,
-                                              @RequestBody Message message) {
+    @PostMapping("/message/{user_id}")
+    public ResponseEntity<Message> postMessage(@PathVariable("user_id") int id,
+                                               @RequestBody Message message) {
         Person person = (Person) personService.findById(id).get();
         Message result = new Message(message.getId(), message.getContent(), person);
         return new ResponseEntity<>(

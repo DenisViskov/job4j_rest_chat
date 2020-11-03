@@ -102,12 +102,12 @@ class RoomControllerTest {
     }
 
     @Test
-    void getMessage() throws Exception {
+    void postMessage() throws Exception {
         when(personService.findById(1)).thenReturn(Optional.of(new Person(1,
                 "login",
                 "password",
                 new Role(1, "ROLE_USER"))));
-        mockMvc.perform(get("/room/message/1")
+        mockMvc.perform(post("/room/message/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"id\":0,\"content\":\"content\"}"))
                 .andExpect(content().json("{\"id\":0," +

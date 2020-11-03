@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.job4j_rest_chat.domain.Person;
 import ru.job4j_rest_chat.domain.Role;
 import ru.job4j_rest_chat.repository.PersonRepository;
+import ru.job4j_rest_chat.repository.RoleRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,15 +18,18 @@ import java.util.Optional;
 @Service("personService")
 public class PersonService implements RepositoryService<Person> {
     private final PersonRepository repository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public PersonService(PersonRepository repository) {
+    public PersonService(PersonRepository repository, RoleRepository roleRepository) {
         this.repository = repository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
     public Person add(Person some) {
-        some.setRole(new Role(1, "ROLE_USER"));
+        Role role_user = roleRepository.save(new Role(1, "ROLE_USER"));
+        some.setRole(role_user);
         return repository.save(some);
     }
 
