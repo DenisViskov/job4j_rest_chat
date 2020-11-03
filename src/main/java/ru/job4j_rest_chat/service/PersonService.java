@@ -3,6 +3,7 @@ package ru.job4j_rest_chat.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.job4j_rest_chat.domain.Person;
+import ru.job4j_rest_chat.domain.Role;
 import ru.job4j_rest_chat.repository.PersonRepository;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class PersonService implements RepositoryService<Person> {
 
     @Override
     public Person add(Person some) {
+        some.setRole(new Role(1, "ROLE_USER"));
         return repository.save(some);
     }
 
