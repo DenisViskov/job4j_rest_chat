@@ -10,6 +10,7 @@ import ru.job4j_rest_chat.domain.Room;
 import ru.job4j_rest_chat.service.RepositoryService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Денис Висков
@@ -46,6 +47,14 @@ public class RoomController {
     @PutMapping("/enter/{id}?user={user_id}")
     public ResponseEntity<Void> enterToRoom(@PathVariable("id") int roomId,
                                             @RequestParam("user_id") int userId) {
-
+        Optional<Room> roomBox = roomService.findById(roomId);
+        Optional<Person> personBox = personService.findById(userId);
+        if (!roomBox.isPresent() || !personBox.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Room room = roomBox.get();
+        room.addPerson(personBox.get());
+        roomService.update(room);
+        return ResponseEntity.ok().build();
     }
 }
