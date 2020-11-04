@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -44,6 +45,7 @@ class RoomControllerTest {
     private RepositoryService roomService;
 
     @Test
+    @WithMockUser
     void getAll() throws Exception {
         when(roomService.findAll()).thenReturn(List.of(new Room(0, "room")));
         mockMvc.perform(get("/room/"))
@@ -53,6 +55,7 @@ class RoomControllerTest {
     }
 
     @Test
+    @WithMockUser
     void createRoom() throws Exception {
         when(roomService.add(any())).thenReturn(new Room(1, "room"));
         mockMvc.perform(post("/room/")
@@ -64,6 +67,7 @@ class RoomControllerTest {
     }
 
     @Test
+    @WithMockUser
     void enterToRoom() throws Exception {
         when(roomService.findById(0)).thenReturn(Optional.of(new Room(0, "room")));
         when(personService.findById(1)).thenReturn(Optional.of(new Person(1,
@@ -76,6 +80,7 @@ class RoomControllerTest {
     }
 
     @Test
+    @WithMockUser
     void WhenWeDontHaveRoomEnterToRoom() throws Exception {
         when(roomService.findById(0)).thenReturn(Optional.empty());
         when(personService.findById(1)).thenReturn(Optional.of(new Person(1,
@@ -87,6 +92,7 @@ class RoomControllerTest {
     }
 
     @Test
+    @WithMockUser
     void deleteRoom() throws Exception {
         when(roomService.findById(0)).thenReturn(Optional.of(new Room(0, "room")));
         mockMvc.perform(delete("/room/0"))
@@ -95,6 +101,7 @@ class RoomControllerTest {
     }
 
     @Test
+    @WithMockUser
     void WhenDontHaveRoomDeleteRoom() throws Exception {
         when(roomService.findById(0)).thenReturn(Optional.empty());
         mockMvc.perform(delete("/room/0"))
@@ -102,6 +109,7 @@ class RoomControllerTest {
     }
 
     @Test
+    @WithMockUser
     void postMessage() throws Exception {
         when(personService.findById(1)).thenReturn(Optional.of(new Person(1,
                 "login",

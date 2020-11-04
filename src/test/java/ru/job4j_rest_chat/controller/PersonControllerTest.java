@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -39,6 +40,7 @@ class PersonControllerTest {
     private RepositoryService service;
 
     @Test
+    @WithMockUser
     void findAll() throws Exception {
         when(service.findAll()).thenReturn(List.of(new Person(0, "login", "password", null)));
         mockMvc.perform(get("/person/"))
@@ -51,6 +53,7 @@ class PersonControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getById() throws Exception {
         when(service.findById(1)).thenReturn(Optional.of(new Person(1, "login", "password", null)));
         mockMvc.perform(get("/person/1"))
@@ -63,6 +66,7 @@ class PersonControllerTest {
     }
 
     @Test
+    @WithMockUser
     void createPerson() throws Exception {
         when(service.add(any())).thenReturn(new Person(1, "login", "password", null));
         mockMvc.perform(post("/person/")
@@ -75,6 +79,7 @@ class PersonControllerTest {
     }
 
     @Test
+    @WithMockUser
     void updatePerson() throws Exception {
         when(service.findById(0)).thenReturn(Optional.of(new Person(0, "login", "password", null)));
         mockMvc.perform(put("/person/0"))
@@ -83,6 +88,7 @@ class PersonControllerTest {
     }
 
     @Test
+    @WithMockUser
     void deletePerson() throws Exception {
         when(service.findById(0)).thenReturn(Optional.of(new Person(0, "login", "password", null)));
         mockMvc.perform(delete("/person/0"))

@@ -11,4 +11,11 @@ import ru.job4j_rest_chat.domain.Person;
  * @since 03.11.2020
  */
 public interface PersonRepository extends JpaRepository<Person, Integer> {
+    /**
+     * Return person by given login
+     *
+     * @param login
+     * @return Person
+     */
+    Person findByLogin(String login);
 }
