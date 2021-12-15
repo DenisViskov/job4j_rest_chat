@@ -39,9 +39,7 @@ public class PersonController {
     @GetMapping("/")
     public List<Person> findAll() {
         final List<Person> all = service.findAll();
-        if (all.isEmpty()) {
-            throw new NoSuchElementException();
-        }
+        if (all.isEmpty()) throw new NoSuchElementException();
         return all;
     }
 
@@ -108,8 +106,6 @@ public class PersonController {
     }
 
     private void idGreaterThanZero(final int id) {
-        if (id <= 0) {
-            throw new IllegalArgumentException();
-        }
+        if (id <= 0) throw new IllegalArgumentException();
     }
 }

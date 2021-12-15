@@ -13,6 +13,7 @@ import ru.job4j_rest_chat.Job4jRestChatApplication;
 import ru.job4j_rest_chat.domain.Person;
 import ru.job4j_rest_chat.service.RepositoryService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,5 +90,23 @@ class PersonControllerTest {
         mockMvc.perform(delete("/person/1"))
                 .andExpect(status().isOk());
         verify(service).delete(any());
+    }
+
+    @Test
+    @WithMockUser
+    void deletePersonByWrongId() throws Exception {
+        when(service.findById(0)).thenReturn(Optional.of(new Person(0, "login", "password", null)));
+        mockMvc.perform(delete("/person/0"))
+            .andExpect(content().string("Id must be greater than zero"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser
+    void findAllEmptyList() throws Exception {
+        when(service.findAll()).thenReturn(Collections.emptyList());
+        mockMvc.perform(get("/person/"))
+            .andExpect(content().string("No such element"))
+            .andExpect(status().isBadRequest());
     }
 }
