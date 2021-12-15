@@ -5,11 +5,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.job4j_rest_chat.domain.Person;
 import ru.job4j_rest_chat.service.RepositoryService;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 /**
  * Class is a rest person controller
@@ -24,7 +26,7 @@ public class PersonController {
     /**
      * Service
      */
-    private final RepositoryService service;
+    private final RepositoryService<Person> service;
 
     @Autowired
     public PersonController(@Qualifier("personService") RepositoryService service) {
@@ -36,7 +38,11 @@ public class PersonController {
      */
     @GetMapping("/")
     public List<Person> findAll() {
-        return service.findAll();
+        final List<Person> all = service.findAll();
+        if (all.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        return all;
     }
 
     /**
@@ -45,14 +51,12 @@ public class PersonController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Person> getById(@PathVariable("id") int id) {
-        Optional<Person> box = service.findById(id);
-        if (box.isPresent()) {
-            return new ResponseEntity<>(
-                    box.get(),
-                    HttpStatus.OK
-            );
-        }
-        return ResponseEntity.notFound().build();
+        idGreaterThanZero(id);
+        return service.findById(id)
+            .map(person -> new ResponseEntity<>(person, HttpStatus.OK))
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Person is not found. Please, check given id."
+            ));
     }
 
     /**
@@ -63,9 +67,10 @@ public class PersonController {
      */
     @PostMapping("/")
     public ResponseEntity<Person> createPerson(@RequestBody Person person) {
+        idGreaterThanZero(person.getId());
         return new ResponseEntity<>(
-                (Person) service.add(person),
-                HttpStatus.OK
+            service.add(person),
+            HttpStatus.OK
         );
     }
 
@@ -77,12 +82,9 @@ public class PersonController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<Void> updatePerson(@PathVariable("id") int id) {
-        Optional<Person> box = service.findById(id);
-        if (box.isPresent()) {
-            service.update(box.get());
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
+        idGreaterThanZero(id);
+        operation(service::update, id);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -93,11 +95,21 @@ public class PersonController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable("id") int id) {
-        Optional<Person> box = service.findById(id);
-        if (box.isPresent()) {
-            service.delete(box.get());
-            return ResponseEntity.ok().build();
+        idGreaterThanZero(id);
+        operation(service::delete, id);
+        return ResponseEntity.ok().build();
+    }
+
+    private void operation(final Consumer<Person> operation, final int id) {
+        service.findById(id)
+            .ifPresentOrElse(operation, () -> {
+                throw new NoSuchElementException();
+            });
+    }
+
+    private void idGreaterThanZero(final int id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException();
         }
-        return ResponseEntity.notFound().build();
     }
 }
