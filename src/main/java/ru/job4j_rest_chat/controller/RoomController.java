@@ -1,5 +1,6 @@
 package ru.job4j_rest_chat.controller;
 
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.job4j_rest_chat.domain.Message;
 import ru.job4j_rest_chat.domain.Person;
 import ru.job4j_rest_chat.domain.Room;
+import ru.job4j_rest_chat.dto.RoomDto;
+import ru.job4j_rest_chat.dto.RoomDtoMapper;
 import ru.job4j_rest_chat.service.RepositoryService;
 
 import java.util.List;
@@ -26,11 +29,13 @@ public class RoomController {
     /**
      * Person service
      */
-    private final RepositoryService personService;
+    private final RepositoryService<Person> personService;
     /**
      * Room service
      */
-    private final RepositoryService roomService;
+    private final RepositoryService<Room> roomService;
+
+    private final RoomDtoMapper roomDtoMapper = RoomDtoMapper.INSTANCE;
 
     @Autowired
     public RoomController(@Qualifier("personService") RepositoryService personService,
@@ -117,5 +122,13 @@ public class RoomController {
                 result,
                 HttpStatus.OK
         );
+    }
+
+    @SneakyThrows
+    @PatchMapping("/partOfUpdateRoom")
+    public ResponseEntity<Void> partOfUpdateRoom(@RequestBody final RoomDto roomDto){
+        final Room room = roomDtoMapper.roomDtoToRoomEntity(roomDto);
+        roomService.update(room);
+        return ResponseEntity.ok().build();
     }
 }
