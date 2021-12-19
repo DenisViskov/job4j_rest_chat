@@ -1,7 +1,6 @@
 package ru.job4j_rest_chat.controller;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,18 +9,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.job4j_rest_chat.Job4jRestChatApplication;
 import ru.job4j_rest_chat.domain.Person;
 import ru.job4j_rest_chat.service.RepositoryService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -81,8 +77,8 @@ class PersonControllerTest {
     @Test
     @WithMockUser
     void updatePerson() throws Exception {
-        when(service.findById(0)).thenReturn(Optional.of(new Person(0, "login", "password", null)));
-        mockMvc.perform(put("/person/0"))
+        when(service.findById(1)).thenReturn(Optional.of(new Person(1, "login", "password", null)));
+        mockMvc.perform(put("/person/1"))
                 .andExpect(status().isOk());
         verify(service).update(any());
     }
@@ -90,9 +86,27 @@ class PersonControllerTest {
     @Test
     @WithMockUser
     void deletePerson() throws Exception {
-        when(service.findById(0)).thenReturn(Optional.of(new Person(0, "login", "password", null)));
-        mockMvc.perform(delete("/person/0"))
+        when(service.findById(1)).thenReturn(Optional.of(new Person(1, "login", "password", null)));
+        mockMvc.perform(delete("/person/1"))
                 .andExpect(status().isOk());
         verify(service).delete(any());
+    }
+
+    @Test
+    @WithMockUser
+    void deletePersonByWrongId() throws Exception {
+        when(service.findById(0)).thenReturn(Optional.of(new Person(0, "login", "password", null)));
+        mockMvc.perform(delete("/person/0"))
+            .andExpect(content().string("Id must be greater than zero"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser
+    void findAllEmptyList() throws Exception {
+        when(service.findAll()).thenReturn(Collections.emptyList());
+        mockMvc.perform(get("/person/"))
+            .andExpect(content().string("No such element"))
+            .andExpect(status().isBadRequest());
     }
 }
