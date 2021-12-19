@@ -120,11 +120,17 @@ class PersonControllerTest {
     @SneakyThrows
     void partOfUpdatePerson() {
         doNothing().when(service).update(any());
+
         final PersonDto request = PersonDto.builder()
             .id(1)
             .login("testLogin")
             .password("TestPassword")
-            .role(RoleDto.builder().id(2).name("TestName").build())
+            .role(
+                RoleDto.builder()
+                .id(2)
+                .name("TestName")
+                .build()
+            )
             .build();
 
         final String jsonBody = mapper.writeValueAsString(request);

@@ -138,7 +138,13 @@ class RoomControllerTest {
         final RoomDto request = RoomDto.builder()
             .id(1)
             .name("test")
-            .persons(Set.of(PersonDto.builder().id(1).login("test").password("test").build()))
+            .persons(Set.of(
+                PersonDto.builder()
+                .id(1)
+                .login("test")
+                .password("test")
+                .build())
+            )
             .build();
 
         final String jsonBody = mapper.writeValueAsString(request);
