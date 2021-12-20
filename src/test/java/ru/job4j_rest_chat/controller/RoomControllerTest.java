@@ -1,7 +1,8 @@
 package ru.job4j_rest_chat.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,21 +11,20 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.job4j_rest_chat.Job4jRestChatApplication;
 import ru.job4j_rest_chat.domain.Person;
 import ru.job4j_rest_chat.domain.Role;
 import ru.job4j_rest_chat.domain.Room;
+import ru.job4j_rest_chat.dto.PersonDto;
+import ru.job4j_rest_chat.dto.RoomDto;
 import ru.job4j_rest_chat.service.RepositoryService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,11 +38,13 @@ class RoomControllerTest {
     @MockBean
     @Qualifier("personService")
     @Autowired
-    private RepositoryService personService;
+    private RepositoryService<Person> personService;
     @MockBean
     @Qualifier("roomService")
     @Autowired
-    private RepositoryService roomService;
+    private RepositoryService<Room> roomService;
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     @WithMockUser
@@ -125,5 +127,31 @@ class RoomControllerTest {
                         "\"password\":\"password\"," +
                         "\"role\":{\"id\":1,\"name\":\"ROLE_USER\"}}}"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @SneakyThrows
+    @WithMockUser
+    void partOfUpdateRoom() {
+        doNothing().when(roomService).update(any());
+
+        final RoomDto request = RoomDto.builder()
+            .id(1)
+            .name("test")
+            .persons(Set.of(
+                PersonDto.builder()
+                .id(1)
+                .login("test")
+                .password("test")
+                .build())
+            )
+            .build();
+
+        final String jsonBody = mapper.writeValueAsString(request);
+
+        mockMvc.perform(patch("/room/partOfUpdateRoom")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(jsonBody))
+            .andExpect(status().isOk());
     }
 }

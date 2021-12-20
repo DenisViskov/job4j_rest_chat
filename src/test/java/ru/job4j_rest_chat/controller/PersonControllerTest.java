@@ -1,5 +1,7 @@
 package ru.job4j_rest_chat.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,6 +13,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j_rest_chat.Job4jRestChatApplication;
 import ru.job4j_rest_chat.domain.Person;
+import ru.job4j_rest_chat.dto.PersonDto;
+import ru.job4j_rest_chat.dto.RoleDto;
 import ru.job4j_rest_chat.service.RepositoryService;
 
 import java.util.Collections;
@@ -18,8 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,7 +36,9 @@ class PersonControllerTest {
     @MockBean
     @Qualifier("personService")
     @Autowired
-    private RepositoryService service;
+    private RepositoryService<Person> service;
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     @WithMockUser
@@ -108,5 +113,31 @@ class PersonControllerTest {
         mockMvc.perform(get("/person/"))
             .andExpect(content().string("No such element"))
             .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser
+    @SneakyThrows
+    void partOfUpdatePerson() {
+        doNothing().when(service).update(any());
+
+        final PersonDto request = PersonDto.builder()
+            .id(1)
+            .login("testLogin")
+            .password("TestPassword")
+            .role(
+                RoleDto.builder()
+                .id(2)
+                .name("TestName")
+                .build()
+            )
+            .build();
+
+        final String jsonBody = mapper.writeValueAsString(request);
+
+        mockMvc.perform(patch("/person/partOfUpdatePerson")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonBody))
+            .andExpect(status().isOk());
     }
 }

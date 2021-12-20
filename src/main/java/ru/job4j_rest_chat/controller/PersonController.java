@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j_rest_chat.domain.Person;
+import ru.job4j_rest_chat.dto.PersonDto;
+import ru.job4j_rest_chat.dto.PersonDtoMapper;
 import ru.job4j_rest_chat.service.RepositoryService;
 
 import java.util.List;
@@ -27,6 +29,8 @@ public class PersonController {
      * Service
      */
     private final RepositoryService<Person> service;
+
+    private final PersonDtoMapper dtoMapper = PersonDtoMapper.INSTANCE;
 
     @Autowired
     public PersonController(@Qualifier("personService") RepositoryService service) {
@@ -82,6 +86,20 @@ public class PersonController {
     public ResponseEntity<Void> updatePerson(@PathVariable("id") int id) {
         idGreaterThanZero(id);
         operation(service::update, id);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Part of update person
+     *
+     * @param personDto
+     * @return
+     */
+    @PatchMapping("/partOfUpdatePerson")
+    public ResponseEntity<Void> partOfUpdatePerson(@RequestBody final PersonDto personDto) {
+        idGreaterThanZero(personDto.getId());
+        final Person person = dtoMapper.personDtoToPersonEntity(personDto);
+        service.update(person);
         return ResponseEntity.ok().build();
     }
 
