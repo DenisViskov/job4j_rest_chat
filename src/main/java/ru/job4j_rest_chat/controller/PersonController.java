@@ -11,6 +11,7 @@ import ru.job4j_rest_chat.dto.PersonDto;
 import ru.job4j_rest_chat.dto.PersonDtoMapper;
 import ru.job4j_rest_chat.service.RepositoryService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
@@ -68,8 +69,7 @@ public class PersonController {
      * @return Person
      */
     @PostMapping("/")
-    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
-        idGreaterThanZero(person.getId());
+    public ResponseEntity<Person> createPerson(@Valid @RequestBody Person person) {
         return new ResponseEntity<>(
             service.add(person),
             HttpStatus.OK

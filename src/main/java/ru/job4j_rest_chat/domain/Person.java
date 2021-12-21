@@ -1,6 +1,10 @@
 package ru.job4j_rest_chat.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
@@ -17,16 +21,21 @@ public class Person {
      * Id
      */
     @Id
+    @NotNull
+    @Min(value = 1, message = "id must be at least 1")
+    @Max(value = 10000, message = "id cannot greater than 10000")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     /**
      * Login
      */
+    @NotBlank(message = "login is mandatory field")
     @Column(name = "login")
     private String login;
     /**
      * Password
      */
+    @NotBlank(message = "password is mandatory")
     @Column(name = "password")
     private String password;
     /**

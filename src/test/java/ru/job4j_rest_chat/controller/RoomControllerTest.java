@@ -62,7 +62,7 @@ class RoomControllerTest {
         when(roomService.add(any())).thenReturn(new Room(1, "room"));
         mockMvc.perform(post("/room/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"id\":0,\"name\":\"room\"}"))
+                .content("{\"id\":1,\"name\":\"room\"}"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\"id\":1,\"name\":\"room\",\"persons\":[]}"))
                 .andExpect(status().isCreated());

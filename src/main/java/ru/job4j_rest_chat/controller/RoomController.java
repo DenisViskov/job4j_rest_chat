@@ -13,6 +13,7 @@ import ru.job4j_rest_chat.dto.RoomDto;
 import ru.job4j_rest_chat.dto.RoomDtoMapper;
 import ru.job4j_rest_chat.service.RepositoryService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,8 +60,8 @@ public class RoomController {
      * @return room
      */
     @PostMapping("/")
-    public ResponseEntity<Room> createRoom(@RequestBody Room room) {
-        Room result = (Room) roomService.add(room);
+    public ResponseEntity<Room> createRoom(@Valid @RequestBody Room room) {
+        Room result = roomService.add(room);
         return new ResponseEntity<>(
                 result,
                 HttpStatus.CREATED

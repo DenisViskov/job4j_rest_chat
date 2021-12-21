@@ -1,6 +1,7 @@
 package ru.job4j_rest_chat.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -19,11 +20,16 @@ public class Room {
      * Id
      */
     @Id
+    @NotNull
+    @Min(value = 1, message = "id must be at least 1")
+    @Max(value = 10000, message = "id cannot greater than 10000")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     /**
      * Name
      */
+    @NotBlank
+    @Size(min = 1, max = 10, message = "Name must be between 1 to 10 characters")
     @Column(name = "name")
     private String name;
     /**
